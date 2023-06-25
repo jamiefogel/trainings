@@ -1,0 +1,26 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\toprule
+            &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}\\
+            &\multicolumn{1}{c}{price}&\multicolumn{1}{c}{price}&\multicolumn{1}{c}{price}\\
+\midrule
+mpg         &      -49.51         &      -294.2\sym{***}&       21.85         \\
+            &     (-0.57)         &     (-5.28)         &      (0.29)         \\
+\addlinespace
+weight      &       1.747\sym{**} &                     &       3.465\sym{***}\\
+            &      (2.72)         &                     &      (5.49)         \\
+\addlinespace
+foreign     &                     &      1767.3\sym{*}  &      3673.1\sym{***}\\
+            &                     &      (2.52)         &      (5.37)         \\
+\addlinespace
+\_cons      &      1946.1         &     11905.4\sym{***}&     -5853.7         \\
+            &      (0.54)         &     (10.28)         &     (-1.73)         \\
+\midrule
+\(N\)       &          74         &          74         &          74         \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize \textit{t} statistics in parentheses}\\
+\multicolumn{4}{l}{\footnotesize You can add a footnote here}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

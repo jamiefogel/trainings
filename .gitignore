@@ -1,0 +1,17 @@
+
+*.ps
+*.gz
+*.tex~
+*.bak
+*.blg
+*.dvi
+*.out
+*.log
+*.bbl
+*.aux
+*.nav
+*.snm
+*.sav
+*.vrb
+*.toc
+*.synctex

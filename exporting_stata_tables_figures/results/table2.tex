@@ -1,0 +1,26 @@
+\begin{table}[htbp]\centering
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\caption{My Regression Table}
+\begin{tabular}{l*{3}{c}}
+\toprule
+          &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}\\
+          &\multicolumn{1}{c}{Model 1}&\multicolumn{1}{c}{Model 2}&\multicolumn{1}{c}{Model 3}\\
+\midrule
+mpg       &   -49.51         &   -294.2\sym{***}&    21.85         \\
+          &  (86.16)         &  (55.69)         &  (74.22)         \\
+\addlinespace
+weight    &    1.747\sym{**} &                  &    3.465\sym{***}\\
+          &  (0.641)         &                  &  (0.631)         \\
+\addlinespace
+foreign   &                  &   1767.3\sym{*}  &   3673.1\sym{***}\\
+          &                  &  (700.2)         &  (684.0)         \\
+\addlinespace
+\_cons    &   1946.1         &  11905.4\sym{***}&  -5853.7         \\
+          & (3597.0)         & (1158.6)         & (3377.0)         \\
+\midrule
+\(N\)     &       74         &       74         &       74         \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+\end{table}
