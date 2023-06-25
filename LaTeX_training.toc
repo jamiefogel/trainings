@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {1}Alternative Title for Section on Sections and Subsections}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}How to create a subsection}{2}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}You can even create subsubsections!}{2}{subsubsection.1.1.1}
+\contentsline {section}{\numberline {2}Pretty Equations}{3}{section.2}
+\contentsline {section}{\numberline {3}Figures}{3}{section.3}
+\contentsline {section}{\numberline {4}Hyperlinks}{9}{section.4}
+\contentsline {section}{\numberline {5}Tips and tricks}{9}{section.5}
+\contentsline {section}{\numberline {6}Text Formatting}{9}{section.6}

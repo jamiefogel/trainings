@@ -1,0 +1,8 @@
+Wikibooks has a section explaining some of the more common errors that prevent your document from compiling: \url{http://en.wikibooks.org/wiki/LaTeX/Errors_and_Warnings.}
+
+    Some others:
+    \begin{itemize}
+        \item \lst= ! Extra alignment tab has been changed to \cr = --- You specified the wrong number of columns in a tabular environment
+        \item \lst= ! File ended while scanning use of \@writefile.=
+              \lst= <inserted text> \par ... \begin{ document} = --- Delete the .aux file in the directory where your .tex file is saved. This sometimes occurs after compilation failed on the previous attempt.
+    \end{itemize}

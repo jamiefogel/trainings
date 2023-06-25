@@ -1,0 +1,20 @@
+\beamer@endinputifotherversion {3.07pt}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Basic Elements of a \LaTeX {} Document}{16}{0}{2}
+\beamer@subsectionintoc {2}{1}{Preamble}{17}{0}{2}
+\beamer@subsectionintoc {2}{2}{Document Text}{19}{0}{2}
+\beamer@subsectionintoc {2}{3}{Commands}{20}{0}{2}
+\beamer@subsectionintoc {2}{4}{Symbols}{21}{0}{2}
+\beamer@subsectionintoc {2}{5}{Environments}{22}{0}{2}
+\beamer@sectionintoc {3}{Equations}{24}{0}{3}
+\beamer@subsectionintoc {3}{1}{The Math Environment}{26}{0}{3}
+\beamer@subsectionintoc {3}{2}{The Align Environment}{27}{0}{3}
+\beamer@sectionintoc {4}{Figures}{31}{0}{4}
+\beamer@sectionintoc {5}{Tables}{39}{0}{5}
+\beamer@subsectionintoc {5}{1}{The Tabular Environment}{40}{0}{5}
+\beamer@subsectionintoc {5}{2}{The Table Environment}{43}{0}{5}
+\beamer@subsectionintoc {5}{3}{The Longtable Environment}{46}{0}{5}
+\beamer@sectionintoc {6}{Hyperlinks}{49}{0}{6}
+\beamer@sectionintoc {7}{BibTeX}{53}{0}{7}
+\beamer@sectionintoc {8}{Some Common Errors You Will Encounter at Compilation}{54}{0}{8}
+\beamer@sectionintoc {9}{Where to Go For Help}{55}{0}{9}
