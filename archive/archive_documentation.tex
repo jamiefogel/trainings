@@ -1,0 +1,295 @@
+\documentclass[11pt]{article}
+
+% Loading packages
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage[position=t,singlelinecheck=off,justification=centering,labelformat=empty]{subfig}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{sectsty}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{datetime}
+\usepackage{tikz}
+\usepackage{type1cm}
+\usepackage{lettrine}
+\usepackage{comment}
+\usepackage{morefloats}
+\usepackage{longtable}
+\usepackage{psfrag}
+\usepackage{changepage}
+\usepackage{xstring}
+\usepackage{listings}
+
+\parskip 1pc
+\setlength{\parindent}{0pt}
+%\renewcommand\familydefault{\sfdefault}
+%\renewcommand{\thesection}{\large\arabic{section}}
+%\allsectionsfont{\large}
+\settimeformat{ampmtime}
+\mmddyyyydate
+
+\lstloadlanguages{TeX}
+\lstset{backgroundcolor=\color{white},
+numbers=none, basicstyle=\footnotesize\ttfamily,
+numbersep=2pt, stepnumber=1, breaklines=true}
+
+\def\lst{\lstinline}
+
+\definecolor{linkcolor}{rgb}{0,0,0.50}
+\setcitestyle{authoryear, round, semicolon, aysep={},yysep={;},notesep={,}}
+\hypersetup{
+    bookmarks=true,                 % show bookmarks bar?
+    unicode=false,                  % non-Latin characters in bookmarks
+    pdftoolbar=true,                % show toolbar?
+    pdfmenubar=true,                % show menu?
+    pdffitwindow=true,              % window fit to page when opened
+    pdfstartview={FitH},            % fits the width of the page to the window
+    pdftitle={},                    % title
+    pdfauthor={BPS team},           % author
+    pdfnewwindow=true,              % links in new window
+    colorlinks=true,                % false: boxed links; true: colored links
+    linkcolor=blue,                 % color of internal links
+    citecolor=black,                % color of links to bibliography
+    filecolor=magenta,              % color of file links
+    urlcolor=blue,                  % color of external links
+    breaklinks=true
+}
+
+\fancyfoot{}
+\pagestyle{fancy}
+
+\setcitestyle{authoryear, round, semicolon, aysep={},yysep={;},notesep={,}}
+
+\newcommand{\HRULE}[1]{\color{#1}{\rule{2pc}{.018in}}}
+\definecolor{gold}{rgb}{0.85,.66,0}
+\definecolor{blue}{rgb}{0,0,1}
+
+\def\results{S:/olderworkers/results}
+\def\bs{\begin{sideways}}
+\def\es{\end{sideways}}
+
+
+\title{Automatically Archive Files on the Linux cluster at the Boston Fed}
+\author{Jamie Fogel}
+\date{May 21, 2014}
+
+\begin{document}
+
+\maketitle
+
+\section{The Problem}
+
+At the Boston Fed we do not have any sort of version control system. This means that once you update and save a do-file (or other type of program) the old version is lost. While the Linux cluster is constantly backed up, providing some opportunity to restore old files, this process may be slow and requires you to know exactly which files you wish to restore. An ideal system would:
+\begin{itemize}
+  \item Store all of your old files with a time stamp so that you have access to and a record of previous versions
+  \item Be stored locally so that you can access your old files yourself rather than requesting a restore through CLS
+  \item Not take up enough file space to create a burden on the system
+  \item Be sufficiently automated that the user does not need to make a conscious effort to use the system
+\end{itemize}
+I believe that I have created a system that comes close enough to accomplishing the above so as to be useful to the entire department.
+
+\section{The Python Script}
+
+My solution consists of a relatively simple python script that can be used in conjunction with \textbf{cron}, a Unix time-based job scheduler. \textbf{Cron} allows you to schedule certain unix jobs to run at specified intervals\footnote{For more details see \url{http://en.wikipedia.org/wiki/Cron}.} The python script, \textbf{archive.py}, loops over all files within the current working directory and all of its subdirectories. It checks whether or not each file has been modified today and, if not, creates a time-stamped copy of that file within a directory called ``archives'' located within the parent directory (\textbf{archive.py} will create the ``archives'' folder when it is first run).  My script only archives .do, .ado, .py, .m, .r, .R, .tex, and .sas files, however other file types can easily be added. I include these file types because they are commonly used and relatively small. This program should only be used to archive script files, as attempting to archive data and other files may very quickly use an excessive amount of file storage.
+
+All archived files will be named according to the following convention:
+\begin{itemize}
+  \item All slashes (``/'') are converted to double dashes (``--'').
+  \item A time stamp of the form ``-YYYY-MM-DD'' is appended to the end of the file name before the file extension.
+\end{itemize}
+
+For example, if I run archive.py from my home directory (\nolinkurl{/home/homedir/)} a file stored as \nolinkurl{/home/homedir/subdir/file.do} and modified on May 21, 2014 will be archived as \nolinkurl{/home/homedir/archives/subdir--file-2014-05-21.do}.
+
+Finally, a log is kept of each run of archive.py in a file called ``archivelog.txt'' that is created in your home directory. Be sure to check this file regularly to be sure that the archive process is executing properly.
+
+\section{Using \textbf{cron} to Run the Python Script at Specified Intervals}
+
+This part is somewhat complicated but only needs to be done once. Just follow these steps:
+\begin{enumerate}
+  \item You must request permission to edit your \textbf{crontab} file from Jones.
+  \item Open the terminal on the cluster.
+  \item Type ``crontab -e'' in the terminal command line to open your crontab file.
+  \item Edit your crontab file to specify the intervals at which you want to run the archive script. You specify jobs as follows: \\
+    min hour day\_of\_month month day\_of\_week command to execute. \\
+    My crontab file looks like this:
+    \begin{lstlisting}
+00 23 * * * cd /home/homedir/	&&	python /home/homedir/archive.py
+00 23 * * * cd /shared/bpsdata/	&&	python /home/homedir/archive.py
+00 23 * * * cd /data/CPS	&&	python /home/homedir/archive.py
+00 23 * * * cd /data/SIPP/	&&	python /home/homedir/archive.py
+    \end{lstlisting}
+    This runs my script every night at 11PM. I specify that I want to run the script in four different working directories. This means that I will save archived files in four different places: /home/homedir/archives/, /shared/bpsdata/archives/, /data/CPS/archives/, and /data/SIPP/archives/.
+
+    For some reason, you must edit your crontab file using vim commands. This is somewhat complicated so if you are unfamiliar with vim I suggest you Google it or ask Jones or someone else for help.
+\end{enumerate}
+
+\section{Disclaimer}
+
+This script has not been extensively tested and I am not very experienced in python or unix, so there may be errors. However, I have been using this system for five months without issue. If you encounter any problems please feel free to contact me at \href{mailto:jamie.fogel@gmail.com}{jamie.fogel@gmail.com}.
+
+Your crontab setup may become broken when linux cluster maintenance occurs, so be sure to check that archives are still being created after maintenance.
+
+
+\section{archive.py}
+
+Below is the code for archive.py:
+
+\begin{lstlisting}
+
+"""
+archive.py
+Jamie Fogel, Dec 18, 2013
+
+Adapted from code written by Vikram Jambulapati to automatically archive old do-files. My code gets all files
+        of a specified file type within a particular file tree. This version saves all archives in a folder
+        called 'archives' in the parent directory.
+This file should be saved in your home directory and called from the parent directory you wish to archive.
+        For example, if I want to archive /home/homedir/, then /home/homedir/ must be my working directory when
+        archive.py is called
+
+"""
+
+
+#!/usr/bin/python
+import os
+import shutil
+import datetime
+import re
+
+# Define base path
+base_path = os.getcwd()
+
+# Get current date (full time stamp) and convert to YMD string
+current_date = datetime.datetime.now()
+current_ymd = "%02d-%02d-%02d" % (current_date.year, current_date.month, current_date.day)
+
+# Compile regular expressions for later use
+archives = re.compile("/archives$")
+do = re.compile(".do$")
+
+# Ensure that a archives folder exists, if not create one
+archive_path = os.path.join(base_path,"archives")
+if not os.path.exists(archive_path):
+    os.makedirs(archive_path)
+
+# Function creates a new file name for files to be archived. Full filepath of original file included in
+#        filename with "/" changed to "--" and timestamp appended to end of filename.
+def new_path(old_path, base_path):
+    # Get file timestamp (Unix), convert to Python time, and convert to YMD string
+    file_time_unix = os.path.getmtime(old_path)
+    file_time_human = datetime.datetime.fromtimestamp(int(file_time_unix))
+    file_time_ymd = "%02d-%02d-%02d" % (file_time_human.year, file_time_human.month, file_time_human.day)
+
+    temp_path = "%02s-%02s%02s" % (os.path.splitext(old_path)[0], file_time_ymd, os.path.splitext(old_path)[1])
+    tempstr = base_path+"/"
+    temp_path = temp_path.replace(tempstr, "")
+    temp_path = temp_path.replace("/", "--")
+    new_path = base_path+"/archives/"+temp_path
+
+    return {'new_path': new_path,'file_time_ymd': file_time_ymd}
+
+# Function checks whether or not a given file has already been archived
+def already_archived(root, file, archive_folder):
+    old_path = os.path.join(root, file)
+    pattern = "%02s-[0-9]+-[0-9]+-[0-9]+%02s" % (os.path.splitext(old_path)[0], os.path.splitext(old_path)[1])
+    pattern = pattern.replace("/", "--")
+    pattern = pattern.replace(".do","\.do")
+    base = os.getcwd()
+    base = base.replace("/","--")
+    base = base+"--"
+    pattern = pattern.replace(base, "")
+
+    for s in os.listdir(archive_folder):
+        regex = re.compile(pattern)
+        """print ""
+        print s
+        print pattern
+        print regex.search(s)"""
+        if regex.search(s)!=None:
+            return True
+    return False
+
+# Function checks whether file is of type to be archived as defined by 'filetypes' list
+def check_file_type(file, filetypes):
+    for f in filetypes:
+        if os.path.splitext(file)[1]==f:
+            return True
+    return False
+
+# Functions checks whether file is in the .Trash folder
+def check_trash(root):
+    pattern = ".*/\.Trash.*"
+    trash_regex = re.compile(pattern)
+    if trash_regex.search(root)!=None:
+        return True
+    else:
+        return False
+
+
+# Define file types to be archived
+filetypes = ['.do', '.ado', '.py', '.m', '.r', '.R','.tex', '.sas']
+
+# Loop over all directories and subdirectories
+for root, dirs, files in os.walk(base_path):
+    if not archives.search(root):
+
+        for file in files:
+            # Only copy do-files
+            """
+            if file[0] == ".":
+                continue
+            elif not do.search(file):
+                continue
+            else:
+            """
+            # Only archive files of specified type
+            if check_file_type(file, filetypes)==True and file[0]!="." and not check_trash(root) :
+                old_path = os.path.join(root, file)
+
+                # Get file timestamp (Unix), convert to Python time, and convert to YMD string
+                file_time_unix = os.path.getmtime(old_path)
+                file_time_human = datetime.datetime.fromtimestamp(int(file_time_unix))
+                file_time_ymd = "%02d-%02d-%02d" % (file_time_human.year, file_time_human.month, file_time_human.day)
+
+                archive_path = base_path +"/archives"
+
+                # If file has been modified today, create new archive
+                if current_ymd == new_path(old_path, base_path)['file_time_ymd']:
+                    shutil.copy2(old_path, new_path(old_path, base_path)['new_path'])
+                    print "Copied %s to %s" % (file, new_path(old_path, base_path)['new_path'])
+
+                # If no version of the current file has ever been archived, archive
+                elif not already_archived(root, file, archive_path):
+                    shutil.copy2(old_path, new_path(old_path, base_path)['new_path'])
+                    print "Copied %s to %s" % (file, new_path(old_path, base_path)['new_path'])
+
+                else:
+                    print "%s already archived" % (file)
+
+
+
+current_date = datetime.datetime.now()
+current_ymd  = "%02d-%02d-%02d" % (current_date.year, current_date.month, current_date.day)
+current_time = "%02d:%02d:%02d" % (current_date.hour, current_date.minute, current_date.second)
+
+print current_ymd
+
+archivelog = os.getcwd()+'/archivelog.txt'
+line = "Ran on %s at %s \n" % (current_ymd, current_time)
+
+\end{lstlisting}
+
+\end{document}
