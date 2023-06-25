@@ -14,6 +14,6 @@ Covers and provides examples of the following Stata commands: `tabout`, `esttab`
 
 Self-explanatory
 
-## \LaTeX
+## LaTeX
 
 Also self-explanatory
