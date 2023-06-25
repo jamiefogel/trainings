@@ -1,4 +1,4 @@
-# trainings
+# Trainings
 
 This repository contains various trainings I put together as an RA at the Boston Fed. It contains 4 different trainings:
 
@@ -14,6 +14,6 @@ Covers and provides examples of the following Stata commands: `tabout`, `esttab`
 
 Self-explanatory
 
-## $$\LaTeX$$
+## \LaTeX{} equation in Markdown: $ \LaTeX{} $
 
 Also self-explanatory
