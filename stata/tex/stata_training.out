@@ -1,0 +1,47 @@
+\BOOKMARK [2][]{Outline0.1}{Introduction}{}
+\BOOKMARK [3][]{Outline0.1.1.2}{Basic Rules for Stata Success}{Outline0.1}
+\BOOKMARK [2][]{Outline0.2}{Logic and Logical \(Boolean\) Operators}{}
+\BOOKMARK [2][]{Outline0.3}{Macros}{}
+\BOOKMARK [3][]{Outline0.3.1.9}{A Quick Review}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.2.10}{Numerical Precision \204 Reason for the Scalar}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.3.11}{Macro Assignment}{Outline0.3}
+\BOOKMARK [3][]{Outline0.3.4.12}{Extended Functions}{Outline0.3}
+\BOOKMARK [2][]{Outline0.4}{If}{}
+\BOOKMARK [3][]{Outline0.4.1.13}{The if Command vs. if Qualifier}{Outline0.4}
+\BOOKMARK [2][]{Outline0.5}{Loops}{}
+\BOOKMARK [3][]{Outline0.5.1.17}{foreach}{Outline0.5}
+\BOOKMARK [3][]{Outline0.5.2.18}{forvalues}{Outline0.5}
+\BOOKMARK [3][]{Outline0.5.3.19}{while}{Outline0.5}
+\BOOKMARK [2][]{Outline0.6}{Strings and Text Parsing}{}
+\BOOKMARK [3][]{Outline0.6.1.20}{Introduction}{Outline0.6}
+\BOOKMARK [3][]{Outline0.6.2.21}{Categorical Variables Stored as Strings}{Outline0.6}
+\BOOKMARK [3][]{Outline0.6.3.22}{Matching and Replacing Text}{Outline0.6}
+\BOOKMARK [3][]{Outline0.6.4.23}{Regular Expressions}{Outline0.6}
+\BOOKMARK [3][]{Outline0.6.5.24}{Other String Functions}{Outline0.6}
+\BOOKMARK [2][]{Outline0.7}{File Read/Write}{}
+\BOOKMARK [3][]{Outline0.7.1.25}{Introduction}{Outline0.7}
+\BOOKMARK [3][]{Outline0.7.2.26}{Example \204 file write}{Outline0.7}
+\BOOKMARK [3][]{Outline0.7.3.27}{Example \204 file read}{Outline0.7}
+\BOOKMARK [2][]{Outline0.8}{Graphics}{}
+\BOOKMARK [3][]{Outline0.8.1.28}{Introduction}{Outline0.8}
+\BOOKMARK [3][]{Outline0.8.2.29}{Stata's Graphics Editor}{Outline0.8}
+\BOOKMARK [3][]{Outline0.8.3.33}{Example \204 twoway}{Outline0.8}
+\BOOKMARK [3][]{Outline0.8.4.34}{An aside \204 Haver}{Outline0.8}
+\BOOKMARK [3][]{Outline0.8.5.37}{Exporting Graphics}{Outline0.8}
+\BOOKMARK [3][]{Outline0.8.6.38}{Schemes}{Outline0.8}
+\BOOKMARK [2][]{Outline0.9}{Outputting Results}{}
+\BOOKMARK [3][]{Outline0.9.1.40}{tabout}{Outline0.9}
+\BOOKMARK [3][]{Outline0.9.2.45}{esttab/estout}{Outline0.9}
+\BOOKMARK [2][]{Outline0.10}{Programs \046 Ado-files}{}
+\BOOKMARK [3][]{Outline0.10.1.51}{Introduction}{Outline0.10}
+\BOOKMARK [3][]{Outline0.10.2.52}{Creating an Ado-file}{Outline0.10}
+\BOOKMARK [2][]{Outline0.11}{Mata}{}
+\BOOKMARK [3][]{Outline0.11.1.54}{Introduction}{Outline0.11}
+\BOOKMARK [3][]{Outline0.11.2.55}{Example \204 OLS}{Outline0.11}
+\BOOKMARK [2][]{Outline0.12}{Miscellaneous}{}
+\BOOKMARK [3][]{Outline0.12.1.57}{Time Series, Panels, and Categorical/Factor Variables}{Outline0.12}
+\BOOKMARK [3][]{Outline0.12.2.59}{Automating Data Downloads \(Linux Stata\)}{Outline0.12}
+\BOOKMARK [3][]{Outline0.12.3.60}{Debugging}{Outline0.12}
+\BOOKMARK [3][]{Outline0.12.4.61}{Capture, confirm, and assert}{Outline0.12}
+\BOOKMARK [3][]{Outline0.12.5.63}{Managing Licenses on the Cluster}{Outline0.12}
+\BOOKMARK [2][]{Outline0.13}{Stata Resources}{}

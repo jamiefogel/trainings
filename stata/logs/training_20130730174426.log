@@ -1,0 +1,571 @@
+--------------------------------------------------------------------------------
+      name:  training
+       log:  /home/UserID/trainings/stata/logs/training_20130730174426.log
+  log type:  text
+ opened on:  30 Jul 2013, 17:44:26
+
+. 
+. 
+. set more off
+
+. 
+. /*****************************************************************************
+> **************************************
+> ******************************************************************************
+> **************************************
+>  Discuss filepaths
+> ******************************************************************************
+> **************************************
+> ******************************************************************************
+> *************************************/ 
+. 
+. 
+. /*
+> Change the working directory to `directory'. If you want to run this code on y
+> our own computer you will
+>         need to create the following subdirectories within the directory you h
+> ave designated as your working
+>         directory:
+>         - data
+>         - do
+>         - tex
+>         - logs
+> You can do this with the mkdir command:
+>         mkdir /home/UserID/trainings/stata/do
+>         mkdir /home/UserID/trainings/stata/data
+>         mkdir /home/UserID/trainings/stata/tex
+>         mkdir /home/UserID/trainings/stata/logs
+> */
+. 
+. 
+. 
+. /* Open the pre-loaded Stata auto data set and save it in a local directory fo
+> r future use */
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. save data/auto.dta, replace
+file data/auto.dta saved
+
+. 
+. 
+. /* Some practice loading and saving data */
+.         /* Load a data set*/
+.         use data/auto.dta, clear
+(1978 Automobile Data)
+
+. 
+.         /* Load a subset of variables from the same data set */
+.         use make price mpg rep78 headroom foreign using data/auto.dta, clear
+(1978 Automobile Data)
+
+.         
+.         /* Load only observations for foreign cars from the same data set */
+.         use if foreign==1 using data/auto.dta, clear
+(1978 Automobile Data)
+
+.         
+.         /* Load only a subset of variables and obsrvations for foreign cars fr
+> om the same data set */
+.         use make price mpg rep78 headroom foreign if foreign==1 using data/aut
+> o.dta, clear
+(1978 Automobile Data)
+
+. 
+.         /* Save the data set we just loaded */
+.         save data/auto_subset.dta, replace
+file data/auto_subset.dta saved
+
+. 
+. 
+.         /* Output the data set in memory as a .csv file */
+.         outsheet using data/auto.csv, comma replace
+
+.         /* Output the data set in memory as an Excel .xlsx file */
+.         export excel using "data/auto.xlsx", firstrow(variables) replace
+file data/auto.xlsx saved
+
+. 
+.         /* Input data from a .csv file */
+.         insheet using  `directory'data/auto.csv, comma clear
+(6 vars, 22 obs)
+
+.         /* Input data from a .xlsx file */
+.         import excel "data/auto.xlsx", sheet("Sheet1") firstrow clear
+
+. 
+. 
+. /* Appending and merging data sets */
+. 
+.         /* Suppose we have data on labor market status split into two data set
+> s --- Pre-1994 and Post-1994. We
+>                 can combine the two by first loading one, and then appending t
+> he other */
+. 
+.         use data/basic_labor_force_pre1994.dta, clear
+
+.         gen year = year(dofm(date))
+
+.         tab year
+
+       year |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1948 |         12        2.17        2.17
+       1949 |         12        2.17        4.35
+       1950 |         12        2.17        6.52
+       1951 |         12        2.17        8.70
+       1952 |         12        2.17       10.87
+       1953 |         12        2.17       13.04
+       1954 |         12        2.17       15.22
+       1955 |         12        2.17       17.39
+       1956 |         12        2.17       19.57
+       1957 |         12        2.17       21.74
+       1958 |         12        2.17       23.91
+       1959 |         12        2.17       26.09
+       1960 |         12        2.17       28.26
+       1961 |         12        2.17       30.43
+       1962 |         12        2.17       32.61
+       1963 |         12        2.17       34.78
+       1964 |         12        2.17       36.96
+       1965 |         12        2.17       39.13
+       1966 |         12        2.17       41.30
+       1967 |         12        2.17       43.48
+       1968 |         12        2.17       45.65
+       1969 |         12        2.17       47.83
+       1970 |         12        2.17       50.00
+       1971 |         12        2.17       52.17
+       1972 |         12        2.17       54.35
+       1973 |         12        2.17       56.52
+       1974 |         12        2.17       58.70
+       1975 |         12        2.17       60.87
+       1976 |         12        2.17       63.04
+       1977 |         12        2.17       65.22
+       1978 |         12        2.17       67.39
+       1979 |         12        2.17       69.57
+       1980 |         12        2.17       71.74
+       1981 |         12        2.17       73.91
+       1982 |         12        2.17       76.09
+       1983 |         12        2.17       78.26
+       1984 |         12        2.17       80.43
+       1985 |         12        2.17       82.61
+       1986 |         12        2.17       84.78
+       1987 |         12        2.17       86.96
+       1988 |         12        2.17       89.13
+       1989 |         12        2.17       91.30
+       1990 |         12        2.17       93.48
+       1991 |         12        2.17       95.65
+       1992 |         12        2.17       97.83
+       1993 |         12        2.17      100.00
+------------+-----------------------------------
+      Total |        552      100.00
+
+.         append using data/basic_labor_force_post1994.dta
+
+.         replace year = year(dofm(date))
+(232 real changes made)
+
+.         tab year
+
+       year |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1948 |         12        1.53        1.53
+       1949 |         12        1.53        3.06
+       1950 |         12        1.53        4.59
+       1951 |         12        1.53        6.12
+       1952 |         12        1.53        7.65
+       1953 |         12        1.53        9.18
+       1954 |         12        1.53       10.71
+       1955 |         12        1.53       12.24
+       1956 |         12        1.53       13.78
+       1957 |         12        1.53       15.31
+       1958 |         12        1.53       16.84
+       1959 |         12        1.53       18.37
+       1960 |         12        1.53       19.90
+       1961 |         12        1.53       21.43
+       1962 |         12        1.53       22.96
+       1963 |         12        1.53       24.49
+       1964 |         12        1.53       26.02
+       1965 |         12        1.53       27.55
+       1966 |         12        1.53       29.08
+       1967 |         12        1.53       30.61
+       1968 |         12        1.53       32.14
+       1969 |         12        1.53       33.67
+       1970 |         12        1.53       35.20
+       1971 |         12        1.53       36.73
+       1972 |         12        1.53       38.27
+       1973 |         12        1.53       39.80
+       1974 |         12        1.53       41.33
+       1975 |         12        1.53       42.86
+       1976 |         12        1.53       44.39
+       1977 |         12        1.53       45.92
+       1978 |         12        1.53       47.45
+       1979 |         12        1.53       48.98
+       1980 |         12        1.53       50.51
+       1981 |         12        1.53       52.04
+       1982 |         12        1.53       53.57
+       1983 |         12        1.53       55.10
+       1984 |         12        1.53       56.63
+       1985 |         12        1.53       58.16
+       1986 |         12        1.53       59.69
+       1987 |         12        1.53       61.22
+       1988 |         12        1.53       62.76
+       1989 |         12        1.53       64.29
+       1990 |         12        1.53       65.82
+       1991 |         12        1.53       67.35
+       1992 |         12        1.53       68.88
+       1993 |         12        1.53       70.41
+       1994 |         12        1.53       71.94
+       1995 |         12        1.53       73.47
+       1996 |         12        1.53       75.00
+       1997 |         12        1.53       76.53
+       1998 |         12        1.53       78.06
+       1999 |         12        1.53       79.59
+       2000 |         12        1.53       81.12
+       2001 |         12        1.53       82.65
+       2002 |         12        1.53       84.18
+       2003 |         12        1.53       85.71
+       2004 |         12        1.53       87.24
+       2005 |         12        1.53       88.78
+       2006 |         12        1.53       90.31
+       2007 |         12        1.53       91.84
+       2008 |         12        1.53       93.37
+       2009 |         12        1.53       94.90
+       2010 |         12        1.53       96.43
+       2011 |         12        1.53       97.96
+       2012 |         12        1.53       99.49
+       2013 |          4        0.51      100.00
+------------+-----------------------------------
+      Total |        784      100.00
+
+. 
+.         save data/basic_labor_force.dta, replace
+file data/basic_labor_force.dta saved
+
+. 
+.         /* Now, let's add a measure of inflation to our data set. Since this m
+> eans adding variables to our existing
+>                 observations, rather than adding observations to our existing 
+> variables, we need to merge the data
+>                 sets. Since both inflation and labor force status are both mea
+> sured at monthly intervals, we can
+>                 perform a simple 1:1 merge. This means that the same variable,
+>  in this case date, uniquely identifies
+>                 observations in both data sets. */
+. 
+.         /* We can quickly check to be sure that date uniquely identifies the d
+> ata set in memory, although this isn't
+>                 actually necessary because the merge command will check and is
+> sue an error if date does not uniquely
+>                 identify both data sets */
+.         isid date
+
+. 
+.         /* Now the actual merge command */
+.         merge 1:1 date using data/cpi.dta
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                            12
+        from master                         0  (_merge==1)
+        from using                         12  (_merge==2)
+
+    matched                               784  (_merge==3)
+    -----------------------------------------
+
+. 
+.         /* Let's look at how many of the observations were successfully merged
+> . We do this by tabulating _merge,
+>                 a variable created by the merge command. */
+.         tab _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+         using only (2) |         12        1.51        1.51
+            matched (3) |        784       98.49      100.00
+------------------------+-----------------------------------
+                  Total |        796      100.00
+
+. 
+.         /* Now suppose we want to add GDP data to our data set. GDP, however, 
+> is measured at quarterly
+>                 frequencies. If we tried to merge 1:1 we would get an error. T
+> here are two possible solutions
+>                 to this issue. First, we could simply merge each quarter's GDP
+>  to all three months within that
+>                 quarter. We do this with a many-to-on merge. Alternatively, we
+>  might transform our labor force
+>                 and inflation data set to quarterly frequencies. We would acco
+> mplish this using collapse*/
+. 
+.         preserve
+
+. 
+.         /* Below I perform a many-to-one merge. This means that the merge vari
+> able does not uniquely identify
+>                 observations in the master data set (data set in memory) but d
+> oes uniquely identify observations
+>                 in the using dataset. First we must create the merge variable,
+>  quarter, since we are merging at
+>                 quarterly frequency but our existing date variable is measured
+>  at monthly frequency. (quarter
+>                 already exists in the GDP data set we are merging with) We als
+> o must drop the _merge variable
+>                 created by the previous merge or else we will get an error whe
+> n this merge tries to create it */
+.         drop _merge
+
+.         gen quarter = qofd(dofm(date))
+
+.         merge m:1 quarter using data/gdp.dta
+quarter was float now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             1
+        from master                         1  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                               795  (_merge==3)
+    -----------------------------------------
+
+.         tab _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        master only (1) |          1        0.13        0.13
+            matched (3) |        795       99.87      100.00
+------------------------+-----------------------------------
+                  Total |        796      100.00
+
+.         drop _merge
+
+. 
+.         /* Note:
+>                 --- one-to-many (1:m) merges are analagous to many-to-one, how
+> ever the merge variable uniquely
+>                 identifies observations in the master rather than using data s
+> et.
+>                 --- The merge variable could actually be a set of variables wh
+> ich together uniquely identify
+>                 observations. For eaxample, instead of a single date variable 
+> we might have had year and month.
+>         */
+. 
+.         restore
+
+. 
+.         /* Now, instead of adding GDP to each month, we will calculate quarter
+> ly averages of the unemployment
+>                 rate and inflation rate and merge this 1:1 with GDP. */
+.         gen quarter = qofd(dofm(date))
+
+.         collapse (mean) u cpi, by(quarter)
+
+.         merge 1:1 quarter using data/gdp.dta
+quarter was float now double
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             1
+        from master                         1  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                               265  (_merge==3)
+    -----------------------------------------
+
+.         tab _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+        master only (1) |          1        0.38        0.38
+            matched (3) |        265       99.62      100.00
+------------------------+-----------------------------------
+                  Total |        266      100.00
+
+.         drop _merge
+
+. 
+.         /*
+>         M:M merges also exist in Stata but you should never use them. For deta
+> ils (and proof that Stata Corp
+>                has a sense of humor, see the documentation by typing ``help me
+> rge''.  If you think you want to
+>                 perform a M:M merge, you may actually want a ``joinby''.
+>         */
+. 
+. /* Generating and manipulating variables */
+.         /* Stata's GENERATE command creates a new variable and defines it as y
+> ou specify and REPLACE replaces
+>                 some or all observations of an existing variable. Below we use
+>  both GENERATE and REPLACE to
+>                 create a recession indicator (to add recession bars to a figur
+> e you can use the user-written
+>                 command NBERCYCLES but you will have to look it up yourself) a
+> s well as a dummy for whether or not
+>                 unemployment exceeds 6.5%. */
+.         use data/basic_labor_force.dta, clear
+
+. 
+.         /* Let's start by creating a month variable using some of Stata's date
+> /time functions (for more on this topic
+>                 type "help datetime" or Google "Stata dates" and check out som
+> e of the search results). */
+.         gen month = month(dofm(date))
+
+. 
+.         gen     recession = 1 if (year == 1948 & month >= 11) | (year == 1949 
+> & month <= 10)
+(772 missing values generated)
+
+.         replace recession = 1 if (year == 1953 & month >= 7) | (year == 1954 &
+>  month <= 5)
+(11 real changes made)
+
+.         replace recession = 1 if (year == 1957 & month >= 8) | (year == 1958 &
+>  month <= 4)
+(9 real changes made)
+
+.         replace recession = 1 if (year == 1960 & month >= 4) | (year == 1961 &
+>  month <= 2)
+(11 real changes made)
+
+.         replace recession = 1 if (year == 1969 & month >= 12) | (year == 1970 
+> & month <= 11)
+(12 real changes made)
+
+.         replace recession = 1 if (year == 1973 & month >= 11) | (year==1974) |
+>  (year == 1975 & month <= 3)
+(17 real changes made)
+
+.         replace recession = 1 if (year == 1980 & (month >= 1 & month <= 7))
+(7 real changes made)
+
+.         replace recession = 1 if (year == 1981 & month >= 7) | (year == 1982 &
+>  month <= 11)
+(17 real changes made)
+
+.         replace recession = 1 if (year == 1990 & month >= 8) | (year == 1991 &
+>  month <= 3)
+(8 real changes made)
+
+.         replace recession = 1 if year == 2001 & (month >= 4 & month <= 11)
+(8 real changes made)
+
+.         replace recession = 1 if year >= 2008 & (year < 2009 | (year == 2009 &
+>  month <= 6))
+(18 real changes made)
+
+.         replace recession = 0 if missing(recession)
+(654 real changes made)
+
+. 
+.         /* An alternative to the above, which does the exact same thing, is be
+> low. It might be a good idea to think
+>                 about why they are identical on your own but I am happy to ans
+> wer any questions.
+> 
+>         gen     recession = ( ((year == 1948 & month >= 11) | (year == 1949 & 
+> month <= 10))                 ///
+>         replace recession =  | ((year == 1953 & month >= 7) | (year == 1954 & 
+> month <= 5))                  ///
+>         replace recession =  | ((year == 1957 & month >= 8) | (year == 1958 & 
+> month <= 4))                  ///
+>         replace recession =  | ((year == 1960 & month >= 4) | (year == 1961 & 
+> month <= 2))                  ///
+>         replace recession =  | ((year == 1969 & month >= 12) | (year == 1970 &
+>  month <= 11))                ///
+>         replace recession =  | ((year == 1973 & month >= 11) | (year==1974) | 
+> (year == 1975 & month <= 3))  ///
+>         replace recession =  | ((year == 1980 & (month >= 1 & month <= 7)))   
+>                               ///
+>         replace recession =  | ((year == 1981 & month >= 7) | (year == 1982 & 
+> month <= 11))                 ///
+>         replace recession =  | ((year == 1990 & month >= 8) | (year == 1991 & 
+> month <= 3))                  ///
+>         replace recession =  | ( year == 2001 & (month >= 4 & month <= 11))   
+>                               ///
+>         replace recession =  | ( year >= 2008 & (year < 2009 | (year == 2009 &
+>  month <= 6))) )
+>         */
+. 
+.         /*
+> 
+>         Stata's EGEN command, for +e+xtensions to +gen+erate, is a powerful to
+> ol that
+>                 can handle a number of additional functions. For much more det
+> ail type "help egen"
+>         In particular, it operates well on subgroups of data using the _by_ op
+> tion */
+. 
+.         /* We can use EGEN's TOTAL function to count the number of months in w
+> hich the economy was in a recession*/
+.         egen tot_months_recession = total(recession)
+
+. 
+.         /* We can also calculate the mean unemployment rate */
+.         egen mean_u = mean(u)
+
+. 
+.         /* Now let's get really fancy and calculate the mean unemployment rate
+>  for each year. This requires us
+>                 to use the BY prefix */
+.         bysort year: egen annual_mean_u = mean(u)
+
+.         
+. 
+. /* Labeling variables, values, and the data set */
+. 
+.         /* Stata allows us to label variables, values, and add notes to either
+>  variables or the entire data set */
+.         label variable recession "NBER Recession Indicator" 
+
+. 
+.         /* Value labels are useful for dummy or categorical variables */
+.         label define recession 0 "Not in Recession" 1 "Recession"
+
+.         label values recession recession
+
+. 
+.         /* Attach a note to the data set */
+.         note: This data set was created for the summer 2013 RA training 
+
+.   
+. /* A brief introduction to macros */
+. 
+.         /* A Stata macro is what most programming languages call a variable; t
+> hey can be
+>                 used to store content, numeric or string, which can then be in
+> serted elsewhere in
+>                 the code by invoking the macro. Macros can be local or global 
+> in scope, with the
+>                 former existing solely within the program or do-file in which 
+> they are defined and
+>                 the latter remaining available until they are dropped (macro d
+> rop macroname) or Stata
+>                 is closed. */
+.         
+.         * Local macros
+.         local l1 "p"
+
+.         local l2 "i"
+
+.         gen `l1'`l2' = c(pi)
+
+.         
+.         * Global macros
+.         global myglobal "My Global Macro"
+
+.         di "$myglobal"
+My Global Macro
+
+.         di "${myglobal}"
+My Global Macro
+
+. 
+. 
+. log close `filename'
+      name:  training
+       log:  /home/UserID/trainings/stata/logs/training_20130730174426.log
+  log type:  text
+ closed on:  30 Jul 2013, 17:44:26
+--------------------------------------------------------------------------------

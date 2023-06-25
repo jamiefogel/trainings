@@ -1,0 +1,7 @@
+\frametitle {Batch Stata}Instead of running Stata interactively, you may submit individual jobs in batch mode. In batch mode Stata executes your do-file entirely behind the scenes and creates a log file to keep track of execution. Batch mode uses a license only while Stata is executing and immediately relinquishes that license once execution completes. Batch mode is ideal for running do-files that take a long time but don't need to be actively monitored, such as do-files that automate large data set creation tasks or perform complex and time-consuming estimation routines.
+
+    To run Stata in batch mode open the terminal window and enter at the command line:
+    \begin{lstlisting}
+qbatch stata filepath/yourdofile.do
+    \end{lstlisting}
+    Speak with Jones for further details.

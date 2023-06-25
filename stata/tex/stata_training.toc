@@ -1,0 +1,48 @@
+\beamer@endinputifotherversion {3.07pt}
+\beamer@sectionintoc {1}{Introduction}{1}{0}{1}
+\beamer@subsectionintoc {1}{1}{Basic Rules for Stata Success}{2}{0}{1}
+\beamer@sectionintoc {2}{Logic and Logical (Boolean) Operators}{4}{0}{2}
+\beamer@sectionintoc {3}{Macros}{9}{0}{3}
+\beamer@subsectionintoc {3}{1}{A Quick Review}{9}{0}{3}
+\beamer@subsectionintoc {3}{2}{Numerical Precision --- Reason for the Scalar}{10}{0}{3}
+\beamer@subsectionintoc {3}{3}{Macro Assignment}{11}{0}{3}
+\beamer@subsectionintoc {3}{4}{Extended Functions}{12}{0}{3}
+\beamer@sectionintoc {4}{If}{13}{0}{4}
+\beamer@subsectionintoc {4}{1}{The if Command vs. if Qualifier}{13}{0}{4}
+\beamer@sectionintoc {5}{Loops}{16}{0}{5}
+\beamer@subsectionintoc {5}{1}{foreach}{17}{0}{5}
+\beamer@subsectionintoc {5}{2}{forvalues}{18}{0}{5}
+\beamer@subsectionintoc {5}{3}{while}{19}{0}{5}
+\beamer@sectionintoc {6}{Strings and Text Parsing}{20}{0}{6}
+\beamer@subsectionintoc {6}{1}{Introduction}{20}{0}{6}
+\beamer@subsectionintoc {6}{2}{Categorical Variables Stored as Strings}{21}{0}{6}
+\beamer@subsectionintoc {6}{3}{Matching and Replacing Text}{22}{0}{6}
+\beamer@subsectionintoc {6}{4}{Regular Expressions}{23}{0}{6}
+\beamer@subsectionintoc {6}{5}{Other String Functions}{24}{0}{6}
+\beamer@sectionintoc {7}{File Read/Write}{25}{0}{7}
+\beamer@subsectionintoc {7}{1}{Introduction}{25}{0}{7}
+\beamer@subsectionintoc {7}{2}{Example --- file write}{26}{0}{7}
+\beamer@subsectionintoc {7}{3}{Example --- file read}{27}{0}{7}
+\beamer@sectionintoc {8}{Graphics}{28}{0}{8}
+\beamer@subsectionintoc {8}{1}{Introduction}{28}{0}{8}
+\beamer@subsectionintoc {8}{2}{Stata's Graphics Editor}{29}{0}{8}
+\beamer@subsectionintoc {8}{3}{Example --- twoway}{33}{0}{8}
+\beamer@subsectionintoc {8}{4}{An aside --- Haver}{34}{0}{8}
+\beamer@subsectionintoc {8}{5}{Exporting Graphics}{37}{0}{8}
+\beamer@subsectionintoc {8}{6}{Schemes}{38}{0}{8}
+\beamer@sectionintoc {9}{Outputting Results}{39}{0}{9}
+\beamer@subsectionintoc {9}{1}{tabout}{40}{0}{9}
+\beamer@subsectionintoc {9}{2}{esttab/estout}{45}{0}{9}
+\beamer@sectionintoc {10}{Programs \& Ado-files}{51}{0}{10}
+\beamer@subsectionintoc {10}{1}{Introduction}{51}{0}{10}
+\beamer@subsectionintoc {10}{2}{Creating an Ado-file}{52}{0}{10}
+\beamer@sectionintoc {11}{Mata}{54}{0}{11}
+\beamer@subsectionintoc {11}{1}{Introduction}{54}{0}{11}
+\beamer@subsectionintoc {11}{2}{Example --- OLS}{55}{0}{11}
+\beamer@sectionintoc {12}{Miscellaneous}{57}{0}{12}
+\beamer@subsectionintoc {12}{1}{Time Series, Panels, and Categorical/Factor Variables}{57}{0}{12}
+\beamer@subsectionintoc {12}{2}{Automating Data Downloads (Linux Stata)}{59}{0}{12}
+\beamer@subsectionintoc {12}{3}{Debugging}{60}{0}{12}
+\beamer@subsectionintoc {12}{4}{Capture, confirm, and assert}{61}{0}{12}
+\beamer@subsectionintoc {12}{5}{Managing Licenses on the Cluster}{63}{0}{12}
+\beamer@sectionintoc {13}{Stata Resources}{67}{0}{13}

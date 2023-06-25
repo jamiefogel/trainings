@@ -1,0 +1,362 @@
+\documentclass[fleqn, 10pt]{beamer}
+
+
+\title{\textbf{Stata Training}}
+\date[April 2013]{April 11, 2013}
+\author[J. Fogel]{Jamie Fogel \\ Research Assistant \\ }
+
+\def\tex{S:/trainings/stata/tex}
+\def\graph_{G:/Deptdata/Research/Share/RE-RKT-A/directors_apr_2013/results}
+
+\usetheme{AnnArbor}
+\usecolortheme{wolverine}
+
+\setbeamertemplate{footline}
+{%
+  \begin{beamercolorbox}{section in head/foot}
+	\hspace{1em} \insertshortauthor \hfill \inserttitle , \insertshortdate \hfill \insertframenumber /  \inserttotalframenumber \hspace{1em}
+  \end{beamercolorbox}%
+}
+
+\setbeamertemplate{headline}
+{
+  \begin{beamercolorbox}{section in head/foot}
+  	\insertsectionnavigationhorizontal{.5\textwidth}{}{} \hfill  \hspace{1em}
+  \end{beamercolorbox}
+}
+
+
+\usepackage{hyperref}
+\usepackage{import}
+\usepackage{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+\usepackage{amsmath}
+\setlength{\mathindent}{0.5 em}
+\usepackage{wrapfig}
+\usepackage{comment}
+\usepackage{listings}
+%\usepackage{subfig}
+
+%\usebeamercolor*[fg]{normal text}
+\usebeamercolor{structure}
+\usebeamercolor{frametitle}
+%\setbeamercolor{block title}{bg=\color{structure.fg}, fg=black}
+
+\lstset{basicstyle= \ttfamily \scriptsize, frame=trbl, backgroundcolor=\color{frametitle.bg},rulecolor=\color{structure.fg}}
+\usepackage{xcolor}
+
+\def\lst{\lstinline}
+
+\newcommand{\com}[1]{{\footnotesize\texttt{#1}}}
+
+\begin{document}
+
+\begin{frame}[fragile]{Test}
+
+
+    Most of the data sets you will use will be saved in Stata's file format, ``.dta.'' When this is the case you will load the data set using Stata's \lstinline+use+ command. Usually this is sufficient, however sometimes you may want to load only a subset of the data. In this case you may specify a subset of the variables to load or an \lstinline+if+ or \lstinline+in+ statement to specify which observations you would like to load.
+    \begin{lstlisting}
+        use myfile.dta
+        use var1 var2 using myfile.dta
+        use if age > 15 using myfile.dta
+        use var1 var2 using myfile.dta
+        use age var1 var2 if age > 15 using myfile.dta
+    \end{lstlisting}
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}[plain]
+    \titlepage\footnote{This presentation borrows heavily from Ryan Kessler's Stata training, Summer 2012}
+\end{frame}
+
+\begin{frame}{Debugging}
+   \begin{itemize}
+      \item Pause
+      \item Trace
+      \item Findbug
+    \end{itemize}	
+\end{frame}
+
+\begin{frame}{Managing Licenses on the Linux Cluster}
+
+\end{frame}
+
+\section{Basic Rules for Stata Success}
+
+\begin{frame}{Basic Rules for Stata Success}
+    \begin{enumerate}
+        \item All of your work should be in a do-file \pause
+        \item Use loops and macros to keep your code simple \pause
+        \item Use a log file \pause
+        \item Set up an organized file structure
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{All of your work should be in a do-file}
+        \begin{itemize}
+            \item You \textbf{\emph{ALWAYS}} want to have a record of what you are doing; a do-file is that record
+            \item You may be asked to update your results months from now, after new data has been released. With a do-file this is as simple as re-running your code with the updated data.  \pause
+        \end{itemize}
+            \begin{wrapfigure}{r}{.4\textwidth}
+                \begin{center}
+                \includegraphics[width=.4\textwidth]{S:/misc_results/dofile_badtime.eps}
+                \end{center}
+            \end{wrapfigure}
+        \clearpage
+\end{frame}
+
+\section{Scope}
+
+\begin{frame}{What is scope?}
+
+\end{frame}
+
+\section{File read/write}
+
+\section{\lst=if=]}
+
+\subsection{The \lst=if= command vs. \lst=if= qualifier}
+
+\begin{frame}[fragile]{The \lst=if= command vs. \lst=if= qualifier}
+    Stata provides two different types of \lst=if= structures --- the \lst=if= qualifier and the \lst=if= command or statement.
+    \begin{itemize}
+        \item \lst=if= qualifier --- tells a Stata command to operate on only a subset of the data. The \lst=if= qualifier appears after the command name in the command's syntax and is followed by an expression which it will evaluate. The command will then only operate on observations for which the expression evaluates to ``TRUE.''
+        \item \lst=if= command --- is a programming command and tells Stata to execute certain commands only if the expression following ``if'' evaluates to ``TRUE.'' The \lst=if= command always appears at the beginning of a line of code.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{The \lst=if= qualifier}
+    The \lst=if= qualifier tells a Stata command to operate on only a subset of the data. For example, using the auto data set we could restrict a regression of price on MPG and weight to only foreign cars. This is much more convenient than dropping observations that we want to ignore for now but may use later. \pause
+    \begin{lstlisting}
+sysuse auto, clear
+reg price mpg weight
+reg price mpg weight if foreign==1
+    \end{lstlisting} \pause
+    Similarly, we might want to drop all observations for which a certain variable is missing. \pause
+    \begin{lstlisting}
+sysuse auto, clear
+drop if missing(rep78)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{The \lst=if= command}
+    The \lst=if= command is a programming command that allows the programmer to specify conditions that must be satisfied in order for certain lines of code to be executed. Whereas the \lst=if= qualifier operates observation-by-observation, the \lst=if= command is only evaluated once. The \lst=if= command is often used within loops or within programs which take arguments. The code to be executed in the \lst=if= command evaluates to "TRUE" may be placed on the same line as the \lst-if- command if it is only a single line; otherwise it must follow the \lst=if= command in braces.
+    
+    \begin{lstlisting}
+forval i=1(1)10{
+    if `i'<=5   display `i'
+    if `i'>5{
+        local j = `i'^2
+        di `j'
+    }
+}
+    \end{lstlisting} 
+\end{frame}
+
+
+\section{Loops}
+
+\begin{frame}{Loop Basics}
+    Loops are a programming construct that allow you to repeat the same code for different values of a variable. Stata provides 3\footnote{For loops exist but are out-of-date and are rarely used} types of loops: \pause
+    \begin{enumerate}
+        \item \lst=foreach= --- Probably the most useful type of loop; used for cycling through lists of values --- variable names, numbers, elements in a macro --- and repeating commands. \pause
+        \item \lst=forvalues= --- A special case of \lst+foreach+, intended for cycling through certain kinds of numlists. \pause
+        \item \lst=while= --- Rather than repeating commands a specified number of times, as in a \lst=foreach= or \lst=forvalues= loop, a \lst=while= loop repeats commands as long as a specified condition evaluates to true. It is easy to generate an infinite loop using \lst+while+ loops if you are not careful. \pause
+    \end{enumerate}
+\end{frame}
+
+\subsection{\lst=foreach= }
+\begin{frame}[fragile]{The \lst=foreach= Loop}
+    \begin{lstlisting}
+// Looping over all variables in memory
+foreach x of varlist * {
+    gen log_`x' = log(`x')
+}
+    \end{lstlisting}
+
+    \begin{lstlisting}
+// Looping over years of PSID
+foreach y of numlist 1968/1997 1999(2)2009 {
+    gen inc_`y' = income if year == `y'
+}
+    \end{lstlisting}
+
+    \begin{lstlisting}
+// Looping over elements of a macro
+local vowels "A E I O U"
+foreach v of local vowels {
+    di "`v'"
+}
+    \end{lstlisting}
+\end{frame}
+
+
+\subsection{\lst=forvalues= }
+\begin{frame}[fragile]{The \lst=forvalues= Loop}
+    \begin{lstlisting}
+// Display all integers 1--10
+forval i=1(1)10 {
+    di `i'
+}
+    \end{lstlisting}
+
+    \begin{lstlisting}
+// Alternative syntax for incrementing by 1
+forval i=1/10 {
+    gen var`i' = `i'
+}
+    \end{lstlisting}
+
+    \begin{lstlisting}
+// Counting dow from 10, by 2's
+forval i=10(-2)0 {
+    di `i'
+}
+    \end{lstlisting}
+\end{frame}
+
+
+\subsection{\lst=while= }
+\begin{frame}[fragile]{The \lst=while= Loop}
+    \begin{lstlisting}
+// Counting dow from 10, by 2's
+local i=10
+while `i' >= 0 {
+    di `i'
+    local `i' = `i'-2
+}
+    \end{lstlisting}
+
+    \begin{lstlisting}
+//Read and process text from a text file
+capture file close file_to_read_from
+file open file_to_read_from using `file', read
+file read file_to_read_from line
+while r(eof) == 0{
+     //do stuff with text which is saved in `line'.
+     file read file_to_read_from line
+}
+file close file_to_read_from
+    \end{lstlisting}
+\end{frame}
+
+\section{Graphics}
+
+\subsection{Introduction}
+\begin{frame}{Introduction}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=.9\textwidth]{\tex/graphics_gallery.eps}
+    \end{figure}
+
+    \begin{block}{Stata graphics galleries}
+        {\footnotesize
+        \url{http://www.ats.ucla.edu/stat/Stata/library/GraphExamples/default.htm}
+        \url{http://www.survey-design.com.au/Usergraphs.html}
+        \url{http://www.stata.com/support/faqs/graphics/gph/statagraphs.html}
+        }
+    \end{block}
+\end{frame}
+
+\subsection{Stata's Graphics Editor}
+
+\begin{frame}{Creating figures in Stata}
+    Stata's graphics capabilities are quite powerful, although the learning curve can be somewhat steep, as there many different types of graphs and each type comes with a vast assortment of options. In general I recommend using do-files rather than the Stata GUI, however you may want to create a graph but not know the specific options you need to specify in order to add titles and axis labels, format the legend, or change colors. In this case simply use the Stata graphics editor to create the graph. It will then give you the code necessary to re-create the graph in both the review window and the results window.
+\end{frame}
+
+\begin{frame}{Graphics editor}
+    \includegraphics[width=.95\textwidth]{\tex/graphics_dropdown.eps}
+\end{frame}
+
+\begin{frame}{Graphics editor}
+    \includegraphics[width=.95\textwidth]{\tex/graphics_editor.eps}
+\end{frame}
+
+\begin{frame}{Graphics editor}
+    \includegraphics[width=.95\textwidth]{\tex/graphics_results.eps}
+\end{frame}
+
+
+\subsection{Example --- twoway}
+
+\begin{frame}[fragile]{Example --- \lst=twoway=}
+
+ Stata's \lst=twoway= command can be used to combine multiple (compatible) graph types into the same figure; \lst=twoway= takes multiple graph commands as arguments, each in parentheses. In the below example, I use \lst=twoway= to combine a scatter plot and a linear fit:
+
+    \begin{lstlisting}
+sysuse auto  //Use Stata's pre-loaded auto data set
+twoway (scatter price mpg) (lfit price mpg), title(Price v. MPG) ///
+	caption(Source: Stata auto data set)
+graph export 'filepath'price_mpg_figure.eps, replace as(eps)
+    \end{lstlisting}
+        \pause
+    \begin{figure}
+        \includegraphics[height=.35\textheight]{\tex/price_mpg_figure.eps}
+    \end{figure}
+\end{frame}
+
+\subsection{An aside --- Haver}
+
+\begin{frame}{Haver}
+    Stata provides a command, \lst=haver use=, that allows you to load data from the Haver Analytics database, provided you know the appropriate mnemonics.\\
+
+    Unfortunately, \lst=haver use= is compatible with PC Stata only, not Linux Stata. This is an inconvenience, however it is trivially easy to pull and save data using PC Stata and then access it on the Linux Cluster. \\
+
+    Once we identify a data series, all we need to know is the mnemonic and the file in which it's stored, both of which are listed right below the default chart in Haver.\\
+
+    \begin{figure}
+        \includegraphics[height=.25\textheight]{\tex/haver_image.eps}
+    \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Haver Example}
+    Suppose we want to plot the unemployment rate from January 2000--present, with recession shading. The US unemployment rate is available in Haver under the menmonic \texttt{LR} in the US Economic Indicators file \texttt{USECON.DAT}, as is the NBER recession indicator (\texttt{RECESSM2}).
+
+    \pause
+    \vspace{2cm}
+
+    \begin{lstlisting}
+/* This code will work in PC Stata only */
+haver use LR RECESSM2 using "G:\Deptdata\Research\Haver\USECON.DAT", clear
+
+// Formatting date variable
+rename time date
+format date %tmMon_YY //Format the variable so that it will be labeled as a date
+
+// Adjust recession indicator series for consistency with unemployment rate
+sum LR
+gen recess = (r(max)+1)*RECESSM2
+
+// Plot and export the series
+#delimit ;
+twoway
+  (bar recess date, fintensity(100) lcolor(gs13) fcolor(gs13))
+  (tsline LR date)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Haver Example}
+    \begin{figure}
+        \includegraphics{\tex/haver_example.eps}
+    \end{figure}
+\end{frame}
+
+
+
+\subsection{Schemes}
+
+\begin{comment}
+\begin{frame}
+    \begin{figure}
+        \centering
+        \subfloat[s1color_alt]{\includegraphics[width=.33\textwidth]{\tex/price_mpg_figure_s1color_alt.eps}}
+        \subfloat[s1color]{\includegraphics[width=.33\textwidth]{\tex/price_mpg_figure_economist.eps}}\\
+        \subfloat[economist]{\includegraphics[width=.33\textwidth]{\tex/price_mpg_figure_s1color.eps}}
+    \end{figure}
+\end{frame}
+\end{comment}
+
+\end{document}
+

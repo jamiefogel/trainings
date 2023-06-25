@@ -1,0 +1,70 @@
+--------------------------------------------------------------------------------
+      name:  training
+       log:  /home/UserID/trainings/stata/logs/training_20130619154510.log
+  log type:  text
+ opened on:  19 Jun 2013, 15:45:10
+
+. 
+. 
+. 
+. sysuse auto, clear
+(1978 Automobile Data)
+
+. save /home/UserID/trainings/stata/data/auto.dta, replace
+file /home/UserID/trainings/stata/data/auto.dta saved
+
+. 
+. clear
+
+. 
+. 
+. /* Some practice loading and saving data */
+.         /* Load a data set*/
+.         use /home/UserID/trainings/stata/data/auto.dta, clear
+(1978 Automobile Data)
+
+.         
+.         /* Load a subset of variables from the same data set */
+.         use make price mpg rep78 headroom foreign using /home/UserID/training
+> s/stata/data/auto.dta, clear
+(1978 Automobile Data)
+
+.         /* Load only observations for foreign cars from the same data set */
+.         use if foreign==1 using /home/UserID/trainings/stata/data/auto.dta, c
+> lear
+(1978 Automobile Data)
+
+.         /* Load only a subset of variables and obsrvations for foreign cars fr
+> om the same data set */
+.         use make price mpg rep78 headroom foreign if foreign==1 using /home/a1
+> jsf01/trainings/stata/data/auto.dta, clear
+(1978 Automobile Data)
+
+. 
+.         /* Save the data set we just loaded */
+.         save  /home/UserID/trainings/stata/data/auto_subset.dta
+file /home/UserID/trainings/stata/data/auto_subset.dta saved
+
+.         
+. 
+.         /* Output the data set in memory as a .csv file */
+.         outsheet using  /home/UserID/trainings/stata/data/auto.csv, comma rep
+> lace
+
+.         /* Output the data set in memory as an Excel .xlsx file */
+.         export excel using "/home/UserID/trainings/stata/data/auto.xlsx", fir
+> strow(variables)
+file /home/UserID/trainings/stata/data/auto.xlsx already exists
+r(602);
+
+end of do-file
+
+r(602);
+
+. do trainings/stata/do/training
+
+. 
+. 
+. local filename "training"
+
+. capture log close `filename'

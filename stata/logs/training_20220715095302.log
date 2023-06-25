@@ -1,0 +1,470 @@
+-------------------------------------------------------------------------------------------------------
+      name:  training
+       log:  /Users/jfogel/Fed/trainings/stata/logs/training_20220715095302.log
+  log type:  text
+ opened on:  15 Jul 2022, 09:53:02
+
+. 
+. 
+. set more off
+
+. 
+. /****************************************************************************************************
+> ***************
+> *****************************************************************************************************
+> ***************
+>  Discuss filepaths --- make everyone download the data sets and set up the required file structure
+> *****************************************************************************************************
+> ***************
+> *****************************************************************************************************
+> **************/ 
+. 
+. 
+. /*
+> Change the working directory to `directory'. If you want to run this code on your own computer you wi
+> ll
+>         need to create the following subdirectories within the directory you have designated as your 
+> working
+>         directory:
+>         - data
+>         - do
+>         - tex
+>         - logs
+> You can do this with the mkdir command:
+>         mkdir /home/UserID/trainings/stata/do
+>         mkdir /home/UserID/trainings/stata/data
+>         mkdir /home/UserID/trainings/stata/tex
+>         mkdir /home/UserID/trainings/stata/logs
+> */
+. 
+. 
+. 
+. /* Open the pre-loaded Stata auto data set and save it in a local directory for future use */
+. sysuse auto, clear
+(1978 automobile data)
+
+. save data/auto.dta, replace
+file data/auto.dta saved
+
+. 
+. 
+. * Describe and summarize the data
+. describe
+
+Contains data from data/auto.dta
+ Observations:            74                  1978 automobile data
+    Variables:            12                  15 Jul 2022 09:53
+                                              (_dta has notes)
+-------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------------------------------
+make            str18   %-18s                 Make and model
+price           int     %8.0gc                Price
+mpg             int     %8.0g                 Mileage (mpg)
+rep78           int     %8.0g                 Repair record 1978
+headroom        float   %6.1f                 Headroom (in.)
+trunk           int     %8.0g                 Trunk space (cu. ft.)
+weight          int     %8.0gc                Weight (lbs.)
+length          int     %8.0g                 Length (in.)
+turn            int     %8.0g                 Turn circle (ft.)
+displacement    int     %8.0g                 Displacement (cu. in.)
+gear_ratio      float   %6.2f                 Gear ratio
+foreign         byte    %8.0g      origin     Car origin
+-------------------------------------------------------------------------------------------------------
+Sorted by: foreign
+
+. summarize  
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        make |          0
+       price |         74    6165.257    2949.496       3291      15906
+         mpg |         74     21.2973    5.785503         12         41
+       rep78 |         69    3.405797    .9899323          1          5
+    headroom |         74    2.993243    .8459948        1.5          5
+-------------+---------------------------------------------------------
+       trunk |         74    13.75676    4.277404          5         23
+      weight |         74    3019.459    777.1936       1760       4840
+      length |         74    187.9324    22.26634        142        233
+        turn |         74    39.64865    4.399354         31         51
+displacement |         74    197.2973    91.83722         79        425
+-------------+---------------------------------------------------------
+  gear_ratio |         74    3.014865    .4562871       2.19       3.89
+     foreign |         74    .2972973    .4601885          0          1
+
+. // Notice that we don't get any summary stats for the variable make. If we look back at output of the
+>  describe command we will notice that this is because make is a string variable, not numeric. We can 
+> also see this by "browsing" the data/auto
+. browse
+
+. 
+. // Also notice that there are only 69 observations of the variable rep78. This is because 5 observati
+> ons are missing, which we can confirm below. This is the sort of check that can prevent lots of error
+> s later. If a variable has missing values you want to know exactly why, confirm that missing values d
+> on't reflect some sort of problem, and ensure that you are handling missing values appropriately (wha
+> t is appropriate will depend on the context).
+. count if missing(rep78)
+  5
+
+. count if missing(price)
+  0
+
+. 
+. 
+. /* Some practice loading and saving data */
+.         /* Load a data set*/
+.         use data/auto.dta, clear
+(1978 automobile data)
+
+. 
+.         /* Load a subset of variables from the same data set */
+.         use make price mpg rep78 headroom foreign using data/auto.dta, clear
+(1978 automobile data)
+
+.         
+.         /* Load only observations for foreign cars from the same data set */
+.         use if foreign==1 using data/auto.dta, clear
+(1978 automobile data)
+
+.         
+.         /* Load only a subset of variables and obsrvations for foreign cars from the same data set */
+.         use make price mpg rep78 headroom foreign if foreign==1 using data/auto.dta, clear
+(1978 automobile data)
+
+. 
+.     /* Save the data set we just loaded */
+.     save data/auto_subset.dta, replace
+file data/auto_subset.dta saved
+
+. 
+. 
+.         /* Export the data set in memory as a .csv file */
+.         export delimited using data/auto.csv,  replace
+file data/auto.csv saved
+
+.         /* Export the data set in memory as an Excel .xlsx file */
+.         export excel using "data/auto.xlsx", firstrow(variables) replace
+file data/auto.xlsx saved
+
+. 
+.         /* Import data from a .csv file */
+.         import delimited using  `directory'data/auto.csv, clear
+(encoding automatically selected: ISO-8859-1)
+(6 vars, 22 obs)
+
+.         /* Import data from a .xlsx file */
+.         import excel "data/auto.xlsx", sheet("Sheet1") firstrow clear
+(6 vars, 22 obs)
+
+. 
+. 
+. /* Appending and merging data sets */
+. 
+.     /* Let's start by splitting the auto data into different pieces and then learn how to put them ba
+> ck together */
+.         * Keep only foreign cars and save the in a separate data set
+.         use data/auto.dta, clear
+(1978 automobile data)
+
+.         keep if foreign==1
+(52 observations deleted)
+
+.         br    // abbreviation for browse
+
+.         save data/auto_foreign.dta, replace
+file data/auto_foreign.dta saved
+
+.                 
+.         * Keep only domestic cars and save the in a separate data set
+.         use data/auto.dta, clear        
+(1978 automobile data)
+
+.         drop if foreign==1
+(22 observations deleted)
+
+.         save data/auto_domestic.dta, replace
+file data/auto_domestic.dta saved
+
+.         
+.         * Now let's put them back together using append
+.         use data/auto_foreign.dta, clear
+(1978 automobile data)
+
+.         append using data/auto_domestic.dta
+(label origin already defined)
+
+.                 
+. 
+.         /* Now let's split the auto data based on variables, not observations   */
+.         use data/auto.dta, clear
+(1978 automobile data)
+
+.         keep make price mpg rep78
+
+.         isid make  // Confirm that make uniquely identifies the observations
+
+.         * isid foreign // An example of what happens when the variable does not uniquely identify the
+>  data
+.         save data/auto_vars1, replace
+file data/auto_vars1.dta saved
+
+. 
+.         use data/auto.dta, clear
+(1978 automobile data)
+
+.         drop price mpg rep78
+
+.         isid make  // Confirm that make uniquely identifies the observations
+
+.         save data/auto_vars2, replace
+file data/auto_vars2.dta saved
+
+.         
+.         use data/auto_vars1, clear
+(1978 automobile data)
+
+.         merge 1:1 make using data/auto_vars2    
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                             0
+    Matched                                74  (_merge==3)
+    -----------------------------------------
+
+.                 
+.                 
+.         * _merge is a variable created by the merge command that tells you whether or not each observ
+> ations was successfully merged. It's always a good idea to look at this variable and if there are any
+>  unmerged observations, you should understand exactly why they are unmerged and confirm that this is 
+> not a problem. 
+.         tab _merge
+
+   Matching result from |
+                  merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+            Matched (3) |         74      100.00      100.00
+------------------------+-----------------------------------
+                  Total |         74      100.00
+
+.         
+.         
+.         /* I have only shown a 1:1 merge in which the same set of variables uniquely identifies obser
+> vations in both data sets. 1:many and many:1 merges are also possible. For example, suppose in one da
+> ta set you have a panel of earnings for different workers with multiple observations per worker and i
+> n another you have time-invariant worker characteristics. In this case you could merge the time-invar
+> iant worker characteristics on to the earnings panel using a many:1 merge. In this case the worker ID
+>  would uniquely identify observations in the worker characteristics data but not the earnings panel; 
+> each observation in the worker characteristics data would be matched to many observations in the earn
+> ings panel. */
+.                 
+.                 
+.                 
+. /* Let's reshape some data */
+.         sysuse bplong.dta, clear // Built-in data set with 2 blood pressure readings for each patient
+(Fictional blood-pressure data)
+
+.         browse // The data is in "long form" meaning that each reading is a separate observation. Alt
+> ernatively, we could organize the data in "wide form" in which each reading is a different row and th
+> ere is only one observation per patient. 
+
+.         
+.         * Let's reshape the data from long to wide
+.         reshape wide bp, i(patient) j(when)
+(j = 1 2)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations              240   ->   120         
+Number of variables                   5   ->   5           
+j variable (2 values)              when   ->   (dropped)
+xij variables:
+                                     bp   ->   bp1 bp2
+-----------------------------------------------------------------------------
+
+.         /* 
+>         - i() are variables that uniquely identify the data in wide form
+>         - j() is the variable on which we are reshaping
+>         - Notice that instead of the variable bp, we now have 2 variables: bp1 and bp2
+>         - Also notice that the variable when has disappeared
+>         */
+.         
+.         * Now let's go back to long form
+.         reshape long bp, i(patient) j(when)     
+(j = 1 2)
+
+Data                               Wide   ->   Long
+-----------------------------------------------------------------------------
+Number of observations              120   ->   240         
+Number of variables                   5   ->   5           
+j variable (2 values)                     ->   when
+xij variables:
+                                bp1 bp2   ->   bp
+-----------------------------------------------------------------------------
+
+.         
+.         
+. /* Let's collapse the blood pressure data */
+.         sysuse bplong.dta, clear
+(Fictional blood-pressure data)
+
+.         
+.         * Instead of 2 blood pressure readings for each patient, let's just look at the average 
+.         collapse (mean) bp (firstnm) sex agegrp , by(patient)
+
+.         
+.         * We could also have collapsed using other statistics, e.g. take the first observation for ea
+> ch patient
+.         sysuse bplong.dta, clear
+(Fictional blood-pressure data)
+
+.         collapse (firstnm) bp (firstnm) sex agegrp , by(patient)
+
+. 
+.         * Collapse by sex and agegrp
+.         sysuse bplong.dta, clear        
+(Fictional blood-pressure data)
+
+.         collapse (mean) bp, by(sex agegrp)
+
+.                 
+.                 
+.                 
+.                 
+.                 
+. /* Generating variables */
+.         sysuse sp500, clear // Sample data set of SP500 prices
+(S&P 500)
+
+.         
+.         describe date // The date variable is formatted as a Stata date variable. This allows us to d
+> o things like extract the month, year, or day. Stata (like other programming languages) has specific 
+> ways of handling date and time variables. To learn more type "help datetime". 
+
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+-------------------------------------------------------------------------------------------------------
+date            int     %td                   Date
+
+.         
+.         // Generate a dummy variable for the month being January
+.         gen year = year(date)
+
+.         gen month = month(date)
+
+.         gen Jan = month==1
+
+.         tabulate month Jan // Check that this worked correctly. Always useful to perform little check
+> s like this. 
+
+           |          Jan
+     month |         0          1 |     Total
+-----------+----------------------+----------
+         1 |         0         21 |        21 
+         2 |        19          0 |        19 
+         3 |        22          0 |        22 
+         4 |        20          0 |        20 
+         5 |        22          0 |        22 
+         6 |        21          0 |        21 
+         7 |        21          0 |        21 
+         8 |        23          0 |        23 
+         9 |        15          0 |        15 
+        10 |        23          0 |        23 
+        11 |        21          0 |        21 
+        12 |        20          0 |        20 
+-----------+----------------------+----------
+     Total |       227         21 |       248 
+
+.                 
+.         // Now let's create a recession indicator variable      
+.         gen     recession = 1 if year == 2001 & (month >= 4 & month <= 11)
+(82 missing values generated)
+
+.         replace recession = 0 if missing(recession)
+(82 real changes made)
+
+. 
+.         /*
+>         Stata's EGEN command, for +e+xtensions to +gen+erate, is a powerful tool that
+>                         can handle a number of additional functions. For much more detail type "help 
+> egen"
+>         In particular, it operates well on subgroups of data using the _by_ option */
+. 
+.         /* We can use EGEN's TOTAL function to count the number of months in which the economy was in
+>  a recession*/
+.         egen tot_days_recession = total(recession)
+
+. 
+.         /* We can also calculate the mean closing value by month */
+.         bysort month: egen mean_close = mean(close)
+
+. 
+.         
+.         
+.         
+. /* Labeling variables, values, and the data set */
+. 
+.         /* Stata allows us to label variables, values, and add notes to either variables or the entir
+> e data set */
+.         label variable recession "NBER Recession Indicator" 
+
+. 
+.         /* Value labels are useful for dummy or categorical variables */
+.         label define recession 0 "Not in Recession" 1 "Recession"
+
+.         label values recession recession
+
+. 
+.         /* Attach a note to the data set */
+.         note: This data set was created for the 2022 pre-doc training 
+
+. 
+. /* A brief introduction to macros */
+. 
+.         /* A Stata macro is what most programming languages call a variable; they can be
+>                 used to store content, numeric or string, which can then be inserted elsewhere in
+>                 the code by invoking the macro. Macros can be local or global in scope, with the
+>                 former existing solely within the program or do-file in which they are defined and
+>                 the latter remaining available until they are dropped (macro drop macroname) or Stata
+>                 is closed. */
+.         
+.         * Local macros
+.         local l1 "x"
+
+.         local l2 "i"
+
+.         *gen `l1'`l2' = c(pi)
+.         di "`l1' `l2'"
+x i
+
+.         
+.         * Global macros
+.         global myglobal "My Global Macro"
+
+.         di "$myglobal"
+My Global Macro
+
+.         di "${myglobal}"
+My Global Macro
+
+. 
+.         /* Macros can be very useful for storing filepaths. */
+.         local directory "/home/UserID/trainings/stata/"
+
+.         ls "`directory'"
+
+ls: /home/UserID/trainings/stata/: No such file or directory
+
+. 
+. 
+. 
+. 
+. help browse // Show how the help file shows allowable abbreviations
+
+. 
+. log close `filename'
+      name:  training
+       log:  /Users/jfogel/Fed/trainings/stata/logs/training_20220715095302.log
+  log type:  text
+ closed on:  15 Jul 2022, 09:53:03
+-------------------------------------------------------------------------------------------------------

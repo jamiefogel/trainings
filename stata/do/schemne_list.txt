@@ -1,0 +1,13 @@
+Blues
+BrBG
+Greens
+Greys
+Paired
+PuRd
+Purples
+RdBu
+RdGy
+Reds
+Set1
+Set3
+YlOrBr
